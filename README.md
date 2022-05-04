@@ -10,9 +10,9 @@ Participantes:
 	- Espino De Horta Joaquín Gustavo
 	
 Profesor: Dr. Ismael Everardo Barcenas Patiño
-Título : Proyecto 
-Subtítulo : Clasificador 4
-Fecha entrega: 21/05/2022
+Título : Proyecto 4
+Subtítulo : Clasificador de imagenes
+Fecha entrega: 26/05/2022
 
 ```
 
@@ -91,4 +91,6 @@ Fecha entrega: 21/05/2022
 
 
 # Anexo (teoría)
+
+# Referencias
 
