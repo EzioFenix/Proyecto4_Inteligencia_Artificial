@@ -153,7 +153,20 @@ La instalación es para Windows.
 
 A fecha de 04/02/2022 no funciona bien numpy y por tanto openCV Python 3.11 o superior, por ello mejor 3.10.
 
+2.5 Desinstalar Python que no sea superior
+
+En caso de haber instalado un python incorrectamente que no sea la versión especificada, tendrá que hacer los siguiente:
+
+1. Abrir powershell
+2. ejecutar `cd C:\`
+3. Eliminar la carpeta de python `rm .\Python311\ -r` , sólo cambia el nombre de la carpeta en la anterior,  en el código y podrás. 
+4. Ahora puedes instalar python.
+
+2.6 Instalar Python
+
 [Link de python 3.10](https://www.python.org/downloads/release/python-3100/)
+
+
 
 3. Instalar pip
 
