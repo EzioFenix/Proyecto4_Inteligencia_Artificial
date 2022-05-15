@@ -233,41 +233,61 @@ Menu()
     	EjecutarTestPrecision()
 ```
 
-# Experimentos
+# Experimentos 
 
 ## Baja dificultad  ( 3 casos )
 
-Son 3 imagen con resolución 32x32=1024 puntos
+Son 3 imagen con resolución 32x32=1024 puntos (1x el pincel)
 
 ### Problema 1
 
+![1](img/README/1-16526373701691.png){ width=70px }
+
 ### Problema 2
 
+![Imagen 2](documentacion/img/2.png){ width=70px }
+
 ### Problema 3
+
+![Imagen 3](documentacion/img/3.png){ width=70px }
 
 ## Media dificultad  ( 3 casos )
 
-Son 3 imagenes con resolución 144x144, es un 20x a baja dificultad.
+Son 3 imagenes con resolución 144x144, es un 20x (x3 el pincel) a baja dificultad.
 
 ### Problema 1
+![Imagen 4](documentacion/img/4.png){ width=70px }
 
 ### Problema 2
+![Imagen 5](documentacion/img/5.png){ width=70px }
 
 ### Problema 3
 
+![Imagen 6](documentacion/img/6.png){ width=70px }
+
 ## Alta dificultad  ( 3 casos )
 
-Son 3 imagenes con resolución de  320x320 =102,400 por tanto es un multiplicador de 100x.
+Son 3 imagenes con resolución de  320x320 =102,400 por tanto es un multiplicador de 100x (x10 el pincel).
 
 ### Problema 1
 
+![Imagen 7](documentacion/img/7.png){ width=70px }
+
 ### Problema 2
 
-### Problema 3 
+![Imagen 8](documentacion/img/8.png){ width=70px }
+
+### Problema 3
+
+![Imagen 9](documentacion/img/9.png){ width=70px }
 
 ## Sin solución (1 caso)
 
-Una imagen con una resolución de 1024x1024= 1,048,576 por tanto es un multiplicador de 1024x.
+Una imagen con una resolución de 1024x1024= 1,048,576 por tanto es un multiplicador de 1024x (x32 el pincel).
+
+![Imagen 10](documentacion/img/0.png){ width=70px }
+
+
 
 ## Resultados test precisión
 
@@ -275,7 +295,7 @@ Una imagen con una resolución de 1024x1024= 1,048,576 por tanto es un multiplic
  product: AMD Ryzen 7 2700 Eight-Core Processor
           vendor: Advanced Micro Devices [AMD]
           8 nucleos 16 hilos
-- 32 gb DDR4 2600mhz
+- 128 gb DDR4 2600mhz
 - Windows 10 pro
 ```
 
