@@ -121,6 +121,12 @@
 \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
 \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
 \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs}
+\usepackage{caption}
+% Make caption package work with longtable
+\makeatletter
+\def\fnum@table{\tablename~\thetable}
+\makeatother
 \usepackage{graphicx}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -222,25 +228,303 @@ tiempos, y ahora todo siendo digital, mediante lenguajes de programación
 y probabilidad, en lugar de redes neuronales como en 1986.
 \end{frame}
 
-\begin{frame}{Definición del problema}
+\begin{frame}[fragile]{Definición del problema}
 \protect\hypertarget{definiciuxf3n-del-problema}{}
+En el proyecto anterior se tenía que utilizar el teorema de Bayes para
+poder calcular la probabilidad y con dicho programa vamos a partir, es
+decir que los conceptos asociados al calculo de probabilidades mediante
+Bayes, ya se pueden calcular.
+
+Definimos una imagen de \(X,Y\) dimensiones dadas en \texttt{pixeles},
+cada pixel tiene 3 canales de color RGB con los cuales podemos
+modificar. Cada imagen tendrá que ser clasificada dentro de una de las
+posibles opciones de los datos entrenados, suponga que existen
+\(C=[c_1,c_2,c_3, \cdots,c_n]\) clasificaciones con las que fue
+entrenado, la imagen se pasará por el programa y dirá \(c_j\) es la
+clasificación más probable o más parecida.
+
+Vamos a definir la entrada, que en realidad son dos diferentes entradas,
+por una parte tenemos al data-set para entrenar a nuestro modelo, piense
+que tenemos una imagen de \(X,Y\) dimensiones y el otro imágenes que
+tendremos que hacer pruebas, pero a diferencia de el set que esta
+contenido en dimensiones especificas y con colores especificos, las
+imagenes con las que se tienen que clasificar, no cuentan con dichas
+características.
+
+En este caso \(C=[0,1,2, \cdots,9]\)\hspace{0pt}. Nuestro objetivo es
+detectar el número {[}0-9{]} por tanto, cada símbolo de este conjunto
+tiene que tener un conjunto de imagenes que compartan una tendencia, por
+ejemplo tener 100 imágenes de el número 1 desde diferentes posiciones y
+rotaciones, con ello mediante expresiones matemáticas intentaremos
+modelar un comportamiento que prediga el conjunto de datos abstrayendo
+lo más importante.
+
+En el caso de este proyecto se ha delimitado a que las imágenes de
+entrenamiento tengan un dimensión de \(X,Y\) de \(32,32\) . Esto tiene
+la razón de para limitar el tiempo de procesamiento de entrenamiento,
+además de que el peso del repositorio no se eleve mucho. La
+recomendación viene dada de un data-set real que tenia para
+reconocimiento de letras que tenia un peso de \(1[Gb]\) y con ello
+contaba con al rededor de \textbf{307,200} imagenes de entrenamiento.
+
+Recordando que en este caso que dado un vector de condiciones
+\(\vec{Q}\) que contiene los valores \([q_1,q_2,...,q_j]\) para \(j\)
+condiciones, a los cuales debe igualarse \(Am_i\), obtener
+\(Y_{max}(\vec{Q})\) que es la probabilidad más grande para dicho
+vector.
+
+Para solucionar el problema tenemos que calcular la probabilidad pixel y
+pixel \[
+P(Y=y_i|X=x_o)= \frac{P(X=x_0| Y=y_i)\cdot P(Y=y_i)}{P(X=x_o)}
+\]
 \end{frame}
 
-\begin{frame}{Solución}
+\begin{frame}[fragile]{Solución}
 \protect\hypertarget{soluciuxf3n}{}
+\begin{block}{Teoría}
+\protect\hypertarget{teoruxeda}{}
+\begin{block}{Primer paso , elaboración de data-set}
+\protect\hypertarget{primer-paso-elaboraciuxf3n-de-data-set}{}
+En este caso son 10 conjuntos de imágenes, cada uno con 15 imágenes como
+se aprecia en este caso para \(C_1=1\)
+
+\begin{figure}
+\centering
+\includegraphics{img/README/image-20220506183750690.png}
+\caption{data-set número 1}
+\end{figure}
+\end{block}
+
+\begin{block}{Segundo paso, elaboración de historiagrama}
+\protect\hypertarget{segundo-paso-elaboraciuxf3n-de-historiagrama}{}
+Para este método de predicción tenemos que que tomar
+\(32 \hspace{0.3cm}x \hspace{0.3cm} 32=1024\) .Será un histograma que
+contiene el número que que tan negro es, si este es 0 significa que lo
+es, sin embargo si es 255 es blanco, si es un intermedio entre estos es
+un gris. Sólo tenemos esos dos, ya que limitamos nuestra entrada a
+dichos dos colores, para simplificar, si una entrada fuera de otro color
+tendríamos que cambiarla a grises, ya que los que nos interesa en esta
+clasificación es la forma, no el color.
+
+primero definamos los valores de las imágenes para un modelo, suponga la
+existencia de un conjunto de imagenes de comparten las siguientes
+características \textbf{\{escala de grises, están escritos a mano,
+tienen la mismas dimensiones, esta escrito el mismo número\}}.
+
+Veamos un ejemplo para las características anteriormente dadas para el
+modelo del número \texttt{1} definamos las características:
+
+\{escala de gristes,escritos a mano,tienen dimensión 32x32,el número es
+1 y son 15 elementos imagenes\}
+
+Con el anterior conjunto podemos obtener que \(n=15\) \(x=32,y=32\)
+
+Definamos que una imagen es lo siguiente \[
+I=
+\begin{equation}
+\begin{pmatrix}
+p[0,0] & p[0,1] & \cdots & p[0,x]\\
+p[1,0] & p[1,1] & \cdots & p[1,x]\\
+\vdots & \vdots & \ddots & \vdots\\
+p[y,0] & p[y,0] & \cdots & p[y,x]
+\end{pmatrix}
+\end{equation}
+\] Como vamos a trabajar con varias imágenes es necesario definir una
+pequeña notacion \(p1[0,0]\) este es el pixel {[}0,0{]} para la
+\textbf{imagen 1}, \(pn[0,0]\) es el pixel {[}0,0{]} de la
+\texttt{n-esima} imágen.
+
+También definiré una matriz llama \(M=media\) , en este caso tiene un
+subíndice \(1\) eso significa que es la matriz media de imagenes 1 \[
+M_1= \begin{equation}
+\begin{pmatrix}
+pm[0,0] & pm[0,1] & \cdots & pm[0,x]\\
+pm[1,0] & pm[1,1] & \cdots & pm[1,x]\\
+\vdots & \vdots & \ddots & \vdots\\
+pm[y,0] & pm[y,0] & \cdots & pm[y,x]
+\end{pmatrix}
+\end{equation}
+\] para calcular cada uno de los puntos de la matriz \(M\) usamos lo
+siguiente \[
+pm[0,0]= \frac{p1[0,0]+ p2[0,0] + p3[0,0]+ \cdots + pn[0,0]}{n}
+\] Es la media aritmética para el pixel 1 de las imágenes de número 1,
+se tiene que realizar lo mismo para todos los los pixeles de la matriz
+\(M\), pero terminar todos los puntos de la matriz \(M\) sería el modelo
+sólo para la imágenes con el número 1 pero para ser un clasificador
+tiene que tener más que de sólo un sólo resultado, y para este proyecto
+tiene que clasificar entre los posibles resultados de
+\([0,1,2,3,4,\cdots,9]\) y por tanto tendríamos los modelos
+\([M_0,M_1,M_2,M_3,M_4,\cdots,M_9]\).
+\end{block}
+
+\begin{block}{Tercer paso tratar la imagen}
+\protect\hypertarget{tercer-paso-tratar-la-imagen}{}
+La entrada no es siempre la que queremos y por ello es necesario
+manipularla de tal manera que la entrada coincida con una entrada que
+sea posible tratarla.
+
+Para resolver el problema, vamos a usar el teorema de Bayes con la
+siguiente ecuación: \[
+P(Y=y_i|X=x_o)= \frac{P(X=x_0| Y=y_i)\cdot P(Y=y_i)}{P(X=x_o)}
+\] Con dicha ecuación empleándola sobre una imagen podemos saber cuando
+es la probabilidad por cada pixel de la imagen que queremos clasificar
+\[
+P(Y=y_i) \hspace{1cm} \text{Probabilidad a priori}
+\]
+
+\[
+P(X=x_0| Y=y_i) \hspace{1cm} \text{Probabilidad a posterior}
+\]
+
+\[
+P(X=x_o) \hspace{1cm} \text{Termino de normalización}
+\]
+
+\[
+P(Y=y_i|X=x_o)  \hspace{1cm} \text{Probabilidad  de que un pixel sea un modelo}
+\]
+
+Vamos desglosando cada uno en el orden anterior
+
+\begin{block}{Probabilidad a priori}
+\protect\hypertarget{probabilidad-a-priori}{}
+Definamos las variables \(yi \in \{0,1,2,\cdots,9\}\) ya que son las
+posibles categorías que hay , es decir que es la \textbf{probabilidad de
+que sea alguna de las categorías} y por tanto se calcula de la siguiente
+manera \[
+P(Y=y_i)=\frac{1}{n}=\frac{1}{10}\%
+\] recuerda que \(n\) es el número de modelos.
+
+Hay que tener en consideración que esto es debido a que todos los
+modelos se entrenaron con el mismo número de imágenes, de no ser así la
+formula sería : \[
+P(Y=y_i)=\frac{\text{Num imagenes modelo }y_i}{\text{Num imagenes totales}}
+\] Si para entrenar cada modelo usaste 15 imágenes y son 10 modelos
+entonces tendrías \$150 \$ imagenes totales.
+
+Como para el modelo \texttt{Num\ imagenes\ modelo} \(y_i\) fueron 15
+imágenes para entrenar a este modelo, por tanto \[
+\text{Num imagenes modelo }y_i=15
+\] Entonces la probabilidad para que el modelo sea igual a 1 \(P(Y=1)\)
+: \[
+P(Y=1)=\frac{15}{150}\%
+\]
+\end{block}
+
+\begin{block}{Probabilidad a posterior}
+\protect\hypertarget{probabilidad-a-posterior}{}
+Es una probabilidad condicional y por ello recordar la fórmula \[
+P(B|A)=\frac{P(A\cap B)}{P(A)}
+\] Entonces utilizamos la anterior formula \[
+P(X=x_0| Y=y_i)=\frac{P(X=x_o\cap Y=y_i)}{P(X=x_o)}
+\] Esta probabilidad te dice \textbf{que tan probable es que dado un
+modelo, el pixel } \(X=x_o\) sea del valor esperado. \[
+P(X=x_o)
+\]
+
+Te dice de \textbf{cual es la probabilidad de que el pixel tenga el
+valor dado}, por ejemplo
+\end{block}
+\end{block}
+
+\begin{block}{Cuarto paso obtener la probabilidad de una imagen}
+\protect\hypertarget{cuarto-paso-obtener-la-probabilidad-de-una-imagen}{}
+Para la solución requerimos saber de dos cosas:
+
+\begin{itemize}
+\tightlist
+\item
+  Teorema de Bayes para implementar la probabilidad.
+\item
+  Una imagen que no pertenezca al data-set con el cual entrenamos los
+  modelos.
+\end{itemize}
+
+Pasamos la imagen \textbf{input} que queremos saber a que clasificación
+pertenece, llamaremos a la matriz \(I\).
+
+Siguiendo los siguientes pasos:
+
+\begin{itemize}
+\tightlist
+\item
+  Calcular la probabilidad a priori es a partir del número de modelos.
+\item
+  Tratar la imagen y darle las dimensiones, y subir los colores negros
+  para que sean más negros y los blancos , sean más blancos, es decir
+  que si es cercano a blanco volverlo totalmente blanco y si es cercano
+  a negro volverlo totalmente negro.
+\item
+  Calcular la probabilidad a posteriori, pixel a pixel.
+\item
+  Seleccionar la imagen con mayor coincidencia.
+\end{itemize}
+
+\begin{block}{Quinto paso obtener tiempo de ejecución y precisión}
+\protect\hypertarget{quinto-paso-obtener-tiempo-de-ejecuciuxf3n-y-precisiuxf3n}{}
+\begin{block}{Tiempo de ejecución}
+\protect\hypertarget{tiempo-de-ejecuciuxf3n}{}
+Para lograr dicho objetivo sólo es necesario que se pueda calcular el
+tiempo en que tarda desde que la imagen es leida, posteriormente tratada
+y obtenido su probabilidad, con ello podemos decir que se obtiene el
+tiempo.
+\end{block}
+
+\begin{block}{Precisión}
+\protect\hypertarget{precisiuxf3n}{}
+En el caso de la precisión, tenemos que tomar 3 casos de dificultad y
+para lograr ello vamos a hacer algo muy simple, la regla del 80\% de
+casos para entrenar y el 20\% para probar el resultado, en este caso, el
+conjunto de datos de entrenamiento que tenemos es limitado y por ello
+tenemos que reducir la prueba a los siguientes
+
+\begin{itemize}
+\tightlist
+\item
+  Fácil: entrenar el modelo con 4 imágenes por cada modelo y comprobar
+  el resultado con una.
+\item
+  Medio: entrenar el modelo con 5 imágenes por cada modelo y comprobar
+  el resultado con 2.
+\item
+  Difícil: entrenar el modelo con 7 imágenes por cada modelo y comprobar
+  el resultado con 3.
+\item
+  imposible: entrenar el modelo con 10 imágenes por cada modelo y
+  comprobar el resultado con 4.
+\end{itemize}
+\end{block}
+\end{block}
+\end{block}
+\end{block}
+
 \begin{block}{Pseudocódigo}
 \protect\hypertarget{pseudocuxf3digo}{}
-\end{block}
-
-\begin{block}{Explicación}
-\protect\hypertarget{explicaciuxf3n}{}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Menu()}
+    \ControlFlowTok{if} \DecValTok{1}\NormalTok{ then:}
+\NormalTok{        generarModelos()}
+    \ControlFlowTok{elif} \DecValTok{2}\NormalTok{:}
+\NormalTok{        cargarModelosAMemoria()}
+    \ControlFlowTok{elif} \DecValTok{3}\NormalTok{:}
+\NormalTok{        cargarImagenAmemoria()}
+\NormalTok{        tratarImagen()}
+\NormalTok{        calcularProbabilidadImagen()}
+\NormalTok{        seleccionarModeloMasParecido()}
+   \ControlFlowTok{elif} \DecValTok{4}\NormalTok{:}
+\NormalTok{        EjecutarTestPrecision()}
+\end{Highlighting}
+\end{Shaded}
 \end{block}
 \end{frame}
 
-\begin{frame}{Experimentos}
+\begin{frame}[fragile]{Experimentos}
 \protect\hypertarget{experimentos}{}
-\begin{block}{Baja dificultad}
-\protect\hypertarget{baja-dificultad}{}
+\begin{block}{Baja dificultad ( 3 casos )}
+\protect\hypertarget{baja-dificultad-3-casos}{}
+Son 3 imagen con resolución 32x32=1024 puntos
+
 \begin{block}{Problema 1}
 \protect\hypertarget{problema-1}{}
 \end{block}
@@ -254,8 +538,10 @@ y probabilidad, en lugar de redes neuronales como en 1986.
 \end{block}
 \end{block}
 
-\begin{block}{Media dificultad}
-\protect\hypertarget{media-dificultad}{}
+\begin{block}{Media dificultad ( 3 casos )}
+\protect\hypertarget{media-dificultad-3-casos}{}
+Son 3 imagenes con resolución 144x144, es un 20x a baja dificultad.
+
 \begin{block}{Problema 1}
 \protect\hypertarget{problema-1-1}{}
 \end{block}
@@ -269,8 +555,11 @@ y probabilidad, en lugar de redes neuronales como en 1986.
 \end{block}
 \end{block}
 
-\begin{block}{Alta dificultad}
-\protect\hypertarget{alta-dificultad}{}
+\begin{block}{Alta dificultad ( 3 casos )}
+\protect\hypertarget{alta-dificultad-3-casos}{}
+Son 3 imagenes con resolución de 320x320 =102,400 por tanto es un
+multiplicador de 100x.
+
 \begin{block}{Problema 1}
 \protect\hypertarget{problema-1-2}{}
 \end{block}
@@ -284,50 +573,58 @@ y probabilidad, en lugar de redes neuronales como en 1986.
 \end{block}
 \end{block}
 
-\begin{block}{Sin solución}
-\protect\hypertarget{sin-soluciuxf3n}{}
-\end{block}
-\end{frame}
-
-\begin{frame}{Capítulo 1 Introducción}
-\protect\hypertarget{capuxedtulo-1-introducciuxf3n-1}{}
-\end{frame}
-
-\begin{frame}{Capítulo 2 Desarrollo}
-\protect\hypertarget{capuxedtulo-2-desarrollo}{}
-\begin{block}{Idea de desarrollo del programa}
-\protect\hypertarget{idea-de-desarrollo-del-programa}{}
-\end{block}
-
-\begin{block}{Casos de prueba}
-\protect\hypertarget{casos-de-prueba}{}
-\begin{block}{Triviales (1 caso)}
-\protect\hypertarget{triviales-1-caso}{}
-\end{block}
-
-\begin{block}{Fáciles (3 casos)}
-\protect\hypertarget{fuxe1ciles-3-casos}{}
-\end{block}
-
-\begin{block}{Media (3 casos)}
-\protect\hypertarget{media-3-casos}{}
-\end{block}
-
-\begin{block}{Difíciles ( 3 casos )}
-\protect\hypertarget{difuxedciles-3-casos}{}
-\end{block}
-
 \begin{block}{Sin solución (1 caso)}
 \protect\hypertarget{sin-soluciuxf3n-1-caso}{}
+Una imagen con una resolución de 1024x1024= 1,048,576 por tanto es un
+multiplicador de 1024x.
 \end{block}
 
-\begin{block}{Código}
-\protect\hypertarget{cuxf3digo}{}
-\end{block}
+\begin{block}{Resultados test precisión}
+\protect\hypertarget{resultados-test-precisiuxf3n}{}
+\begin{verbatim}
+ product: AMD Ryzen 7 2700 Eight-Core Processor
+          vendor: Advanced Micro Devices [AMD]
+          8 nucleos 16 hilos
+- 32 gb DDR4 2600mhz
+- Windows 10 pro
+\end{verbatim}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+Dificultad & Datos entremiento & Datos test & Precisión\tabularnewline
+\midrule
+\endhead
+Baja & 4 & 1 &\tabularnewline
+Media & 5 & 2 &\tabularnewline
+Alta & 7 & 3 &\tabularnewline
+Imposible & 10 & 4 &\tabularnewline
+\bottomrule
+\end{longtable}
 \end{block}
 
-\begin{block}{Explicación código}
-\protect\hypertarget{explicaciuxf3n-cuxf3digo}{}
+\begin{block}{Resultados tiempo de ejecución}
+\protect\hypertarget{resultados-tiempo-de-ejecuciuxf3n}{}
+Para las pruebas se uso el siguiente hardware:
+
+\begin{verbatim}
+ product: AMD Ryzen 7 2700 Eight-Core Processor
+          vendor: Advanced Micro Devices [AMD]
+          8 nucleos 16 hilos
+- 32 gb DDR4 2600mhz
+- Windows 10 pro
+\end{verbatim}
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+Dificultad & Tiempo & Multiplicador\tabularnewline
+\midrule
+\endhead
+Baja & & x1\tabularnewline
+Media & & x4\tabularnewline
+Alta & & x100\tabularnewline
+Imposible & & x1024\tabularnewline
+\bottomrule
+\end{longtable}
 \end{block}
 \end{frame}
 
@@ -335,6 +632,16 @@ y probabilidad, en lugar de redes neuronales como en 1986.
 \protect\hypertarget{capuxedtulo-3-conclusiuxf3n}{}
 \begin{block}{Barrera Peña Víctor Miguel}
 \protect\hypertarget{barrera-peuxf1a-vuxedctor-miguel}{}
+El proyecto se terminó cumpliendo todos los objetivos que planteaba el
+proyecto, se pudo lograr un clasificador muy versátil que puede
+entrenarse para clasificar cualquier clase de letras escritas a mano o
+incluso para reconocer caracteres de texto, por ejemplo de latex, lo
+único que tendría que hacerse es crear los data-set para el fin que se
+busca y con ello se lograría el objetivo concluido, por tanto puedo
+decir que es un excelente programa, creo que si bien se puede mejorar
+ciertos apartados del programa, creo que sólo valdría la pena de cambiar
+el kernel para una predicción más acertada y detalles de la
+implementación, con ello doy por concluido con éxito el proyecto.
 \end{block}
 
 \begin{block}{Espino de Horta Joaquín Gustavo}
@@ -342,12 +649,48 @@ y probabilidad, en lugar de redes neuronales como en 1986.
 \end{block}
 \end{frame}
 
-\begin{frame}{Anexo (teoría)}
-\protect\hypertarget{anexo-teoruxeda}{}
-\end{frame}
-
 \begin{frame}{Referencias}
 \protect\hypertarget{referencias}{}
+\begin{itemize}
+\tightlist
+\item
+  \emph{The evolution of image classification explained}. (z.d.). Image
+  Classification. Geraadpleegd op 6 mei 2022, van
+  https://stanford.edu/\%7Eshervine/blog/evolution-image-classification-explained
+\item
+  G. (2021, 14 mei). \emph{A brief history of Facial Recognition}. NEC.
+  Geraadpleegd op 6 mei 2022, van
+  https://www.nec.co.nz/market-leadership/publications-media/a-brief-history-of-facial-recognition/\#:\%7E:text=The\%20earliest\%20pioneers\%20of\%20facial,to\%20recognise\%20the\%20human\%20face.
+\item
+  \emph{History of Artificial Intelligence in hindi \textbar{} Brief
+  history \textbar{} MCA/B.tech,etc \textbar{} ai history}. (2021, 4
+  oktober). YouTube. Geraadpleegd op 6 mei 2022, van
+  https://www.youtube.com/watch?v=3qRJfUv7W\_Y
+\item
+  \emph{1 - Bayes con imágenes - Introducción}. (2020, 7 april).
+  YouTube. Geraadpleegd op 15 mei 2022, van
+  https://www.youtube.com/watch?v=qI3n3x4DldY
+\item
+  -\emph{2 - Bayes con imágenes - modelo 1}. (2020, 7 april). YouTube.
+  Geraadpleegd op 15 mei 2022, van
+  https://www.youtube.com/watch?v=bCVQIfm4YFI
+\item
+  \emph{3 - Bayes con imágenes - modelo 2}. (2020, 7 april). YouTube.
+  Geraadpleegd op 15 mei 2022, van
+  https://www.youtube.com/watch?v=zarhUCRGR14
+\item
+  \emph{4 - Bayes con imágenes - modelo 3}. (2020, 7 april). YouTube.
+  Geraadpleegd op 15 mei 2022, van
+  https://www.youtube.com/watch?v=q9juEGJb3mM
+\item
+  \emph{5 - Bayes con imágenes - modelo 4}. (2020, 7 april). YouTube.
+  Geraadpleegd op 15 mei 2022, van
+  https://www.youtube.com/watch?v=ez8aht07Rqk
+\item
+  \emph{6 - Bayes con imágenes - Conclusiones}. (2020, 7 april).
+  YouTube. Geraadpleegd op 15 mei 2022, van
+  https://www.youtube.com/watch?v=9HOrMUNw\_pA
+\end{itemize}
 \end{frame}
 
 \end{document}

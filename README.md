@@ -59,11 +59,10 @@ En el caso de este proyecto se ha delimitado a que las imágenes de entrenamient
 
 Recordando que en este caso que dado un vector de condiciones $\vec{Q}$ que contiene los valores $[q_1,q_2,...,q_j]$ para $j$ condiciones, a los cuales debe igualarse $Am_i$, obtener $Y_{max}(\vec{Q})$ que es la probabilidad más grande para dicho vector.
 
-## Teoría
-
-
-
-
+Para solucionar el problema tenemos que calcular la probabilidad pixel y pixel
+$$
+P(Y=y_i|X=x_o)= \frac{P(X=x_0| Y=y_i)\cdot P(Y=y_i)}{P(X=x_o)}
+$$
 
 # Solución
 
@@ -188,8 +187,6 @@ Te dice de **cual es la probabilidad de que el pixel tenga el valor dado**, por 
 
 ### Cuarto paso  obtener la probabilidad de una imagen 
 
-#### 
-
 Para la solución requerimos saber de dos cosas:
 
 - Teorema de Bayes para implementar la probabilidad.
@@ -197,19 +194,50 @@ Para la solución requerimos saber de dos cosas:
 
 Pasamos la imagen **input** que queremos saber a que clasificación pertenece, llamaremos a la matriz $I$.
 
-**C*
+Siguiendo los siguientes pasos:
 
-
+- Calcular la probabilidad a priori es a partir del número de modelos.
+- Tratar la imagen y darle las dimensiones, y subir los colores negros para que sean más negros y los blancos , sean más blancos, es decir que si es cercano a blanco volverlo totalmente blanco y si es cercano a negro volverlo totalmente negro.
+- Calcular la probabilidad  a posteriori, pixel a pixel.
+- Seleccionar la imagen con mayor coincidencia.
 
 #### Quinto paso  obtener tiempo de ejecución y precisión
 
+##### Tiempo de ejecución
+
+Para lograr dicho objetivo sólo es necesario que se pueda calcular el tiempo en que  tarda desde que la imagen es leida, posteriormente tratada y obtenido su probabilidad, con ello podemos decir que se obtiene el tiempo.
+
+##### Precisión
+
+En el caso de la precisión, tenemos que tomar 3 casos de dificultad y para lograr ello vamos a hacer algo muy simple, la regla del 80% de casos para entrenar y el 20% para probar el resultado, en este caso, el conjunto de datos de entrenamiento que tenemos es limitado y por ello tenemos que reducir la prueba a los siguientes
+
+- Fácil: entrenar el modelo con 4 imágenes por cada modelo y comprobar el resultado con una.
+- Medio: entrenar el modelo con 5 imágenes por cada modelo y comprobar el resultado con 2.
+- Difícil: entrenar el modelo con 7 imágenes por cada modelo y comprobar el resultado con 3.
+- imposible:   entrenar el modelo con 10 imágenes por cada modelo y comprobar el resultado con 4.
+
 ## Pseudocódigo
 
-## Explicación
+```python
+Menu()
+	if 1 then:
+        generarModelos()
+    elif 2:
+        cargarModelosAMemoria()
+   	elif 3:
+        cargarImagenAmemoria()
+        tratarImagen()
+        calcularProbabilidadImagen()
+        seleccionarModeloMasParecido()
+   elif 4:
+    	EjecutarTestPrecision()
+```
 
 # Experimentos
 
-## Baja dificultad
+## Baja dificultad  ( 3 casos )
+
+Son 3 imagen con resolución 32x32=1024 puntos
 
 ### Problema 1
 
@@ -217,7 +245,9 @@ Pasamos la imagen **input** que queremos saber a que clasificación pertenece, l
 
 ### Problema 3
 
-## Media dificultad
+## Media dificultad  ( 3 casos )
+
+Son 3 imagenes con resolución 144x144, es un 20x a baja dificultad.
 
 ### Problema 1
 
@@ -225,53 +255,78 @@ Pasamos la imagen **input** que queremos saber a que clasificación pertenece, l
 
 ### Problema 3
 
-## Alta dificultad
+## Alta dificultad  ( 3 casos )
+
+Son 3 imagenes con resolución de  320x320 =102,400 por tanto es un multiplicador de 100x.
 
 ### Problema 1
 
 ### Problema 2
 
-### Problema 3
+### Problema 3 
 
-## Sin solución
+## Sin solución (1 caso)
 
-# Capítulo 1  Introducción 
+Una imagen con una resolución de 1024x1024= 1,048,576 por tanto es un multiplicador de 1024x.
+
+## Resultados test precisión
+
+```
+ product: AMD Ryzen 7 2700 Eight-Core Processor
+          vendor: Advanced Micro Devices [AMD]
+          8 nucleos 16 hilos
+- 32 gb DDR4 2600mhz
+- Windows 10 pro
+```
+
+| Dificultad | Datos entremiento | Datos test | Precisión |
+| ---------- | ----------------- | ---------- | --------- |
+| Baja       | 4                 | 1          |           |
+| Media      | 5                 | 2          |           |
+| Alta       | 7                 | 3          |           |
+| Imposible  | 10                | 4          |           |
 
 
 
-# Capítulo 2 Desarrollo
+## Resultados tiempo de ejecución
 
-## Idea de desarrollo del programa
+Para las pruebas se uso el siguiente hardware:
 
-## Casos de prueba
+```
+ product: AMD Ryzen 7 2700 Eight-Core Processor
+          vendor: Advanced Micro Devices [AMD]
+          8 nucleos 16 hilos
+- 32 gb DDR4 2600mhz
+- Windows 10 pro
+```
 
-### Triviales (1 caso)
 
-### Fáciles (3 casos)
 
-### Media (3 casos)
+| Dificultad | Tiempo | Multiplicador |
+| ---------- | ------ | ------------- |
+| Baja       |        | x1            |
+| Media      |        | x4            |
+| Alta       |        | x100          |
+| Imposible  |        | x1024         |
 
-### Difíciles ( 3 casos )
 
-### Sin solución (1 caso)
-
-### Código
-
-## Explicación código
 
 # Capítulo 3 Conclusión
 
 ## Barrera Peña Víctor Miguel
 
+El proyecto se terminó cumpliendo todos los objetivos que planteaba el proyecto, se pudo lograr un clasificador muy versátil que puede entrenarse para clasificar cualquier clase de letras escritas a mano o incluso para reconocer caracteres de texto, por ejemplo de latex, lo único que tendría que hacerse es crear los data-set para el fin que se busca y con ello se lograría el objetivo concluido, por tanto puedo decir que es un excelente programa, creo que si bien se puede mejorar  ciertos apartados del programa, creo que sólo valdría la pena de cambiar el kernel para una predicción más acertada y detalles de la implementación, con ello doy por concluido con éxito el proyecto.
+
 ## Espino de Horta Joaquín Gustavo
-
-
-
-# Anexo (teoría)
 
 # Referencias
 
 - *The evolution of image classification explained*. (z.d.). Image Classification. Geraadpleegd op 6 mei 2022, van https://stanford.edu/%7Eshervine/blog/evolution-image-classification-explained
 - G. (2021, 14 mei). *A brief history of Facial Recognition*. NEC. Geraadpleegd op 6 mei 2022, van https://www.nec.co.nz/market-leadership/publications-media/a-brief-history-of-facial-recognition/#:%7E:text=The%20earliest%20pioneers%20of%20facial,to%20recognise%20the%20human%20face.
 - *History of Artificial Intelligence in hindi | Brief history | MCA/B.tech,etc | ai history*. (2021, 4 oktober). YouTube. Geraadpleegd op 6 mei 2022, van https://www.youtube.com/watch?v=3qRJfUv7W_Y
-
+- *1 - Bayes con imágenes - Introducción*. (2020, 7 april). YouTube. Geraadpleegd op 15 mei 2022, van https://www.youtube.com/watch?v=qI3n3x4DldY
+- -*2 - Bayes con imágenes - modelo 1*. (2020, 7 april). YouTube. Geraadpleegd op 15 mei 2022, van https://www.youtube.com/watch?v=bCVQIfm4YFI
+- *3 - Bayes con imágenes - modelo 2*. (2020, 7 april). YouTube. Geraadpleegd op 15 mei 2022, van https://www.youtube.com/watch?v=zarhUCRGR14
+- *4 - Bayes con imágenes - modelo 3*. (2020, 7 april). YouTube. Geraadpleegd op 15 mei 2022, van https://www.youtube.com/watch?v=q9juEGJb3mM
+- *5 - Bayes con imágenes - modelo 4*. (2020, 7 april). YouTube. Geraadpleegd op 15 mei 2022, van https://www.youtube.com/watch?v=ez8aht07Rqk
+- *6 - Bayes con imágenes - Conclusiones*. (2020, 7 april). YouTube. Geraadpleegd op 15 mei 2022, van https://www.youtube.com/watch?v=9HOrMUNw_pA

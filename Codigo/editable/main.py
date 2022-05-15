@@ -20,7 +20,6 @@ Lee una imagen en la dirección que se le de como paramétro y la pasa a un arre
         [255,255,255,0,1,...,244]
 """
 def leer_imagen(nombre_archivo:str)->list[int]:
-    #print(nombre_archivo)
     histograma:list[int]=[]
     dimensionX:int
     dimensionY:int
@@ -112,25 +111,19 @@ Return:
 """
 def crear_modelo(rutaCarpeta:str)->np.ndarray:
     carpeta_actual=os.listdir(rutaCarpeta)
-    #print(carpeta_actual)
     numImagenes=len(carpeta_actual)
     histogramaPromedio=np.zeros(1024,dtype=np.int8)
     
     for imagen in carpeta_actual:
         rutaImagen=os.path.join(rutaCarpeta,imagen)
-        print(rutaImagen)
         lecturaImagen=leer_imagen(rutaImagen)
 
-        print(lecturaImagen[0])
         # Convertimos el arreglo a un np.array
         histogramaActual=np.asanyarray(lecturaImagen)
-        print(histogramaActual)
 
         histogramaPromedio=histogramaPromedio+histogramaActual
 
     # Para ser pormedio tenemos que dividirlo entre el número de imagenes
-    print(histogramaPromedio)
-
     histogramaPromedio= histogramaPromedio/numImagenes 
 
     #El arreglo ahora es flotante, por tanto vamos a convertirlo a int
@@ -151,13 +144,10 @@ def generarModelos()->list[str]:
     # Leemos los archivos de entrenamiento
     carpetas=os.listdir(entrenamientoPath)
     # Leemos cada uno de los modelos de entrenamiento
-    print(carpetas)
     for subcarpeta in carpetas:
         ruta=os.path.join(entrenamientoPath,subcarpeta)
 
-        print(ruta)
         modelo=crear_modelo(ruta)
-        print(modelo.shape)
 
         """# Guardamos el modelo entrenado en un cvs
         nombre_modelo="{0}en.csv".format(subcarpeta)
@@ -176,8 +166,6 @@ def generarModelos()->list[str]:
         
         # Creamos imagen
         nombreNuevo=os.path.join("..","entrenado",subcarpeta+".jpg")
-        print("pp")
-        print(nombreNuevo)
         cv2.imwrite(nombreNuevo,imagen)
 
         #agregamos a la lista de archivos
@@ -258,7 +246,6 @@ def clasificarImagen(direccionImagen:str,direccionesModelos:list[str])->None:
 
 
     for direccion in direccionesModelos:
-        print(direccionesModelos)
         modeloActual=leer_imagen(direccion)
         modeloActual=oscurecer(modeloActual)
         probabilidadActual=obtenerProbabilidadPosteri(modeloActual,imagenActual) 
@@ -293,8 +280,8 @@ def main():
     modelosCargados:list[str]=cargarModelos()
     isModelosCargados:bool = 0<len(modelosCargados)# saber si los modelos estan cargados
     imagenCargada:list
-    isImagenCargada:bool=True
-    direccionImagenCargada:str="1.png"
+    isImagenCargada:bool=False
+    direccionImagenCargada:str=""
     opcion=1
 
     while opcion!=0:
@@ -303,15 +290,15 @@ def main():
             print("Hasta luego")
             time.sleep(1)
         elif opcion==1:
-            print("Entrenanando modelos")
+            print("Entrenanando modelos...")
             if isModelosCargados:
                 print("Deseas volver a generar los modelos")
-                respuesta=input("s=si,n=no")
+                respuesta=input("s=si,n=no   ")
                 respuesta=respuesta.strip()
                 if respuesta=="s":
                     modelosCargados=generarModelos()
-                    print(modelosCargados)
                     isModelosCargados=True
+                    print("Modelos entrenados correctamente")
                 elif respuesta=="n":
                     print("esta bien")
                     time.sleep(1)
@@ -320,6 +307,7 @@ def main():
                     time.sleep(1)
             else:
                 modelosCargados=generarModelos()
+                print("Modelos entrenados correctamente")
         elif opcion==2:
             print("Cargar Modelos")
             dirrecciones=cargarModelos()
@@ -339,11 +327,9 @@ def main():
                         isImagenCargada=False
                     else:
                         print(f"imagen :{direccionImagenCargada}")
-                        print(modelosCargados)
                         clasificarImagen(direccionImagenCargada,modelosCargados)
                 if not isImagenCargada:
                     direccionImagenCargada=cargarImagen()
-                    print(f"direccion: {direccionImagenCargada}")
                     isImagenCargada=True
                     clasificarImagen(direccionImagenCargada,modelosCargados)
         elif opcion==4:
