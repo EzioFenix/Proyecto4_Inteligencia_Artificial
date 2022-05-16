@@ -47,7 +47,7 @@ def leer_imagen(nombre_archivo:str)->list[int]:
 Oscurece la imagen de acuerdo al intervalo dado, si el intervalo es 15, aquellos que tengan menor que el intervalo se volverán negro.
 - Por default el valor esta en 30
 """
-def oscurecer(histograma:list[int],intervalo:int=40)-> list[int]:
+def oscurecer(histograma:list[int],intervalo:int=48)-> list[int]:
     nuevoHistograma:list[int]=[]
 
     for px in histograma:
@@ -238,8 +238,15 @@ def obtenerProbabilidadPosteri(modelo:list[int],imagen:list[int]):
 def clasificarImagen(direccionImagen:str,direccionesModelos:list[str])->str:
     modeloActual:list[int]
 
-    redimensionar(direccionImagen)
+    for direccion in direccionesModelos:
+        img=cv2.imread(direccionImagen)
+        dimensionY=img.shape[0]
+        dimensionX=img.shape[1]
+        redimensionar(direccion,dimensionX,dimensionY)
+
+    
     imagenActual:list[int]=leer_imagen(direccionImagen)
+    imagenActual=oscurecer(imagenActual)
     probabilidadMayor=0.0
     probababilidadesModelos=[int]
 
@@ -265,11 +272,11 @@ def clasificarImagen(direccionImagen:str,direccionesModelos:list[str])->str:
     return nombreResultado
         
 
-def redimensionar(direccionImagen:str)->None:
+def redimensionar(direccionImagen:str,nuevoX:int,nuevoY:int)->None:
     img=cv2.imread(direccionImagen)
     dimensionX,dimensiony,ne= img.shape
-    if not(dimensionX==32 and dimensiony==32):
-        res= cv2.resize(img, dsize=(32, 32), interpolation=cv2.INTER_CUBIC)
+    if not(dimensionX==nuevoX and dimensiony==nuevoY):
+        res= cv2.resize(img, dsize=(nuevoX, nuevoY), interpolation=cv2.INTER_CUBIC)
         cv2.imwrite(direccionImagen,res)
         print("cambio tamaño completado ...")
 
@@ -421,25 +428,34 @@ def main():
             print("Clasificar una imagen")
             if isModelosCargados:
                 if isImagenCargada:
-                    respuesta=input("Desea cargar otra imagen")
+                    respuesta=input("Desea cargar otra imagen s=si,n=no ")
                     respuesta=respuesta.strip()
                     if respuesta=="s":
                         isImagenCargada=False
                     else:
                         print(f"imagen :{direccionImagenCargada}")
+                        inicio=time.process_time()
                         clasificarImagen(direccionImagenCargada,modelosCargados)
+                        fin=time.process_time()
+                        print(f"El tiempo fue:{fin-inicio} segundos")
                 if not isImagenCargada:
                     direccionImagenCargada=cargarImagen()
                     isImagenCargada=True
+                    inicio=time.process_time()
                     clasificarImagen(direccionImagenCargada,modelosCargados)
+                    fin=time.process_time()
+                    print(f"El tiempo fue:{fin-inicio} segundos")
         elif opcion==4:
             print("Realizar test precisión")
             test=[]
+            inicio=time.process_time()
             test.append(testPrecision(4,1))
             test.append(testPrecision(5,2))
             test.append(testPrecision(7,3))
             test.append(testPrecision(10,4))
             print(test)
+            fin=time.process_time()
+            print(f"El tiempo fue:{fin-inicio} segundos")
 
 if __name__ == "__main__":
     #leer_directorio(True)

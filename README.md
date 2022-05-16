@@ -243,27 +243,85 @@ Son 3 imagen con resolución 32x32=1024 puntos (1x el pincel)
 
 ![1](img/README/1-16526373701691.png){ width=70px }
 
+```
+Tu imagen es: ..\entrenado\1.jpg
+La probabilidad es: 0.06260569852941193
+La probabilidad de coincidencia es :0.6260569852941194
+El tiempo fue:0.171875 segundos
+```
+
+- La predicción es correcta 
+
 ### Problema 2
 
 ![Imagen 2](documentacion/img/2.png){ width=70px }
+
+```
+Tu imagen es: ..\entrenado\3.jpg
+La probabilidad es: 0.0598081341911768
+La probabilidad de coincidencia es :0.598081341911768
+El tiempo fue:0.171875 segundos
+```
+
+- La predicción es incorrecta. 
 
 ### Problema 3
 
 ![Imagen 3](documentacion/img/3.png){ width=70px }
 
+```
+Tu imagen es: ..\entrenado\3.jpg
+La probabilidad es: 0.06111825980392147
+La probabilidad de coincidencia es :0.6111825980392147
+El tiempo fue:0.171875 segundos
+```
+
+- La predicción es correcta 
+
 ## Media dificultad  ( 3 casos )
 
 Son 3 imagenes con resolución 144x144, es un 20x (x3 el pincel) a baja dificultad.
 
+
+
 ### Problema 1
+
 ![Imagen 4](documentacion/img/4.png){ width=70px }
 
+```
+Tu imagen es: ..\entrenado\4.jpg
+La probabilidad es: 0.06125340413942622
+La probabilidad de coincidencia es :0.6125340413942622
+El tiempo fue:3.234375 segundos
+```
+
+- La predicción es correcta.
+
 ### Problema 2
+
 ![Imagen 5](documentacion/img/5.png){ width=70px }
+
+```
+Tu imagen es: ..\entrenado\5.jpg
+La probabilidad es: 0.06304971178286195
+La probabilidad de coincidencia es :0.6304971178286195
+El tiempo fue:1.671875 segundos
+```
+
+- La predicción es correcta.
 
 ### Problema 3
 
 ![Imagen 6](documentacion/img/6.png){ width=70px }
+
+```
+Tu imagen es: ..\entrenado\6.jpg
+La probabilidad es: 0.06176663489469558
+La probabilidad de coincidencia es :0.6176663489469558
+El tiempo fue:1.75 segundos
+```
+
+
 
 ## Alta dificultad  ( 3 casos )
 
@@ -273,19 +331,61 @@ Son 3 imagenes con resolución de  320x320 =102,400 por tanto es un multiplicado
 
 ![Imagen 7](documentacion/img/7.png){ width=70px }
 
+```
+Tu imagen es: ..\entrenado\7.jpg
+La probabilidad es: 0.0632344898896487
+La probabilidad de coincidencia es :0.632344898896487
+El tiempo fue:7.4375 segundos
+```
+
+- La predicción es correcta.
+
 ### Problema 2
 
 ![Imagen 8](documentacion/img/8.png){ width=70px }
 
+```
+Tu imagen es: ..\entrenado\8.jpg
+La probabilidad es: 0.06314603247545689
+La probabilidad de coincidencia es :0.6314603247545688
+El tiempo fue:7.125 segundos
+```
+
+- La predicción es correcta.
+
 ### Problema 3
 
 ![Imagen 9](documentacion/img/9.png){ width=70px }
+
+```
+Tu imagen es: ..\entrenado\9.jpg
+La probabilidad es: 0.06002850413596944
+La probabilidad de coincidencia es :0.6002850413596944
+El tiempo fue:7.296875 segundos
+```
+
+- La predicción es correcta.
 
 ## Sin solución (1 caso)
 
 Una imagen con una resolución de 1024x1024= 1,048,576 por tanto es un multiplicador de 1024x (x32 el pincel).
 
 ![Imagen 10](documentacion/img/0.png){ width=70px }
+
+```
+Tu imagen es: ..\entrenado\5.jpg
+La probabilidad es: 0.05316162071969969
+La probabilidad de coincidencia es :0.5316162071969969
+El tiempo fue:70.53125 segundos
+```
+
+- La predicción es incorrecta.
+- Este decimos que es el caso imposible porque de aquí hacia arriba es el punto sin retorno, es posible que se ejecute o que no, todo es culpa de las limitaciones por default de Python, el programa esta hecho para soportar cualquier tamaño de imagen, es decir que si se incluye una imagen que de $4096x4096$ es decir multiplicar por 4 la anchura y la altura, aproximadamente tardaría $32$ minutos en procesarse, si de multiplicara x2 la anchura y la altura, automáticamente tardaría 2 horas, por ello puedes probar con una imagen de $8192x8192$.
+
+```
+RuntimeWarning: overflow encountered in ubyte_scalars
+  resta.append(abs(modelo[i]-imagen[i]))
+```
 
 
 
@@ -299,12 +399,19 @@ Una imagen con una resolución de 1024x1024= 1,048,576 por tanto es un multiplic
 - Windows 10 pro
 ```
 
-| Dificultad | Datos entremiento | Datos test | Precisión |
-| ---------- | ----------------- | ---------- | --------- |
-| Baja       | 4                 | 1          |           |
-| Media      | 5                 | 2          |           |
-| Alta       | 7                 | 3          |           |
-| Imposible  | 10                | 4          |           |
+| Dificultad | Datos entrenamiento | Datos test | Precisión % |
+| ---------- | ------------------- | ---------- | ----------- |
+| Baja       | 4                   | 1          | 70          |
+| Media      | 5                   | 2          | 90          |
+| Alta       | 7                   | 3          | 96.666      |
+| Imposible  | 10                  | 4          | 95          |
+
+La ejecución de resultados es :
+
+```
+[70.0, 90.0, 96.66666666666667, 95.0]
+El tiempo fue:18.296875 segundos
+```
 
 
 
@@ -322,22 +429,61 @@ Para las pruebas se uso el siguiente hardware:
 
 
 
-| Dificultad | Tiempo | Multiplicador |
-| ---------- | ------ | ------------- |
-| Baja       |        | x1            |
-| Media      |        | x4            |
-| Alta       |        | x100          |
-| Imposible  |        | x1024         |
+| Dificultad | Tiempo [s] | Multiplicador |
+| ---------- | ---------- | ------------- |
+| Baja       | 0.171875   | x1            |
+| Media      | 3.234375   | x4            |
+| Alta       | 7.125      | x100          |
+| Imposible  | 70.53125   | x1024         |
 
+La variable en el eje X=multiplicador, en el  eje Y=tiempo
 
+![Grafica dependiente del multplicador](img/README/image-20220516004324192.png)
+
+Con la gráfica obtenemos que el crecimiento de tiempo es lineal.
 
 # Capítulo 3 Conclusión
 
 ## Barrera Peña Víctor Miguel
 
-El proyecto se terminó cumpliendo todos los objetivos que planteaba el proyecto, se pudo lograr un clasificador muy versátil que puede entrenarse para clasificar cualquier clase de letras escritas a mano o incluso para reconocer caracteres de texto, por ejemplo de latex, lo único que tendría que hacerse es crear los data-set para el fin que se busca y con ello se lograría el objetivo concluido, por tanto puedo decir que es un excelente programa, creo que si bien se puede mejorar  ciertos apartados del programa, creo que sólo valdría la pena de cambiar el kernel para una predicción más acertada y detalles de la implementación, con ello doy por concluido con éxito el proyecto.
+El proyecto se terminó cumpliendo todos los objetivos que planteaba el proyecto, se pudo lograr un clasificador muy versátil que puede entrenarse para clasificar cualquier clase de letras escritas a mano o incluso para reconocer caracteres de texto, por ejemplo de latex, lo único que tendría que hacerse es crear los data-set para el fin que se busca y con ello se lograría el objetivo concluido, por tanto puedo decir que es un excelente programa. Esta relizado de manera que se puede extender para reconocer más caracteres, tiene un precisión alta, puede entrenarse con facilidad, puede detectar imagenes de diferentes tamños, creo que el programa supera las espectativas con las que fue diseñado, no hay algo que pueda mejorar en este momento y por ello creo que el proyecto es excelente.
 
 ## Espino de Horta Joaquín Gustavo
+
+La implementación de esta nueva característica o al menos un nuevo enfoque al algoritmo del teorema de Bayes
+se realizó adantándose al problema que ya se tenía presente, conservando el principio operativo, aplicado a una comparativa
+de una sola dimensión para daterminar el reconocimiento de patrones, podrían hacerse sencillas modificaciones
+como el reconocimiento de color, distancia o siluetas así como algoritmos de recorte de imagen. 
+
+Obteniendo un resultado de calidad comercial al reconocimiento de objetos ubicando en una gran imagen 
+proveniente de una transmisión en video a identificar en tiempo real. Como lo son los códigos QR, letras, números, 
+incluso rostros o retinas entre otros dispositivos.
+
+También pueden aplicarse a la edición de imágenes, aplicando selecciones inteligentes, reconociendo patrones y convirtiendo
+dibujos en mapas de vectores de manera automática. Incluso implementarlos en la generación procedural de la música tonal.
+
+# Anexo
+
+## Elaboración de data-set
+
+Para crear los data-set se uso el programa de Inkscape con siguientes requisitos:
+
+-  imágenes cuadradas
+- Usando la plumilla en color negro de acuerdo al multiplicador de cada tipo de imagen, por ejemplo la imagen de $32x32$ tiene un multiplicador de $1$ por tanto la plumilla tiene que tener un tamaño de $1.0[mm]$, si la imagen fuera de $144x144$ el multiplicador es $x3$, ya que $\frac{144}{33} \approx 3$.
+
+Como seleccionar tamaño plumilla:
+
+![seleccionar tamaño plumilla](img/README/image-20220516010023659.png)
+
+Como seleccionar tamaño de imagen:
+
+1. Ir a propiedades de documento
+
+![image-20220516010118895](img/README/image-20220516010118895.png)
+
+2.Cambiar dimensiones
+
+![cambiar dimensiones lienzo](img/README/image-20220516010209321.png)
 
 # Referencias
 
