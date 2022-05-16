@@ -3,6 +3,8 @@ header-includes: |
   \usepackage[utf8]{inputenc}
 ---
 
+#  {.allowframebreaks}
+
 ```yaml
 Campus: Ciudad Universitaria
 Facultad: Ingeniería
@@ -21,18 +23,15 @@ Fecha entrega: 26/05/2022
 
 ```
 
-![](img/README/portada.jpeg){ width=110% }
-
-\newpage
+![](img/README/portada.jpeg){ width=80% }
 
 
-\tableofcontents
 
-# Capítulo 0 Estructura del  repositorio
+# Capítulo 0 Estructura del  repositorio  {.allowframebreaks}
 
-![Tabla de contenido del repositorio](img/README/Screenshot_1.png)
+![Tabla de contenido del repositorio](img/diapositivas/Screenshot_1.png){ width=60% }
 
-# Capítulo 1 Introducción
+# Capítulo 1 Introducción  {.allowframebreaks}
 
 La clasificación de imágenes es un concepto bastante viejo, aunque no pareciese así, digamos que tiene entre 50 y 60  (1960-1970) años la primera vez que se utilizó una tecnología así, sólo que esa vez era más primitiva, por varias razones, tenemos que pensar que en ese tiempo las computadoras, todavía trabajaban con grandes computadoras que ocupaban un cuarto, todavía no estaba la teoría para la creación
 
@@ -42,13 +41,13 @@ Empezamos con el siguiente investigador que se acerca más a lo que es mi proyec
 
 
 
-![Phd. Terrence Sejnowski ](img/README/terrence.jpg){ width=30% }
+![Phd. Terrence Sejnowski ](img/diapositivas/terrence.jpg){ width=30% }
 
 
 
 Retomando lo hecho por los antes mencionados, implementó, pero ahora usando computadoras modernas, y con mucha mayor potencia, que aquellos tiempos, y ahora todo siendo digital, mediante lenguajes de programación y probabilidad, en lugar de redes neuronales como en 1986.
 
-# Definición del problema
+# Definición del problema  {.allowframebreaks}
 
 En el proyecto anterior se tenía que utilizar el teorema de Bayes para poder calcular la probabilidad y con dicho programa vamos a partir, es decir que los conceptos asociados al calculo de probabilidades mediante Bayes, ya se pueden calcular.
 
@@ -67,17 +66,19 @@ $$
 P(Y=y_i|X=x_o)= \frac{P(X=x_0| Y=y_i)\cdot P(Y=y_i)}{P(X=x_o)}
 $$
 
-# Solución
+# Solución  {.allowframebreaks}
 
-## Teoría
+## Teoría {.allowframebreaks}
 
 ### Primer paso , elaboración de data-set
 
 En este caso son 10 conjuntos de imágenes, cada uno con 15 imágenes como se aprecia en este caso para $C_1=1$
 
-![data-set número 1](img/README/image-20220506183750690.png) 
+![data-set número 1](img/diapositivas/image-20220506183750690.png){ width=50% } 
 
-### Segundo paso,  elaboración de historiagrama
+
+
+# Segundo paso,  elaboración de historiagrama {.allowframebreaks}
 
 Para este método de predicción tenemos que que tomar $32 \hspace{0.3cm}x \hspace{0.3cm} 32=1024$ .Será un histograma que contiene el número que que tan negro es, si este es 0 significa que lo es, sin embargo si es 255 es blanco, si es un intermedio entre estos es un gris. Sólo tenemos esos dos, ya que limitamos nuestra entrada a dichos dos colores, para simplificar, si una entrada fuera de otro color tendríamos que cambiarla a grises, ya que los que nos interesa en esta clasificación es la forma, no el color.
 
@@ -117,7 +118,7 @@ pm[0,0]= \frac{p1[0,0]+ p2[0,0] + p3[0,0]+ \cdots + pn[0,0]}{n}
 $$
 Es la media aritmética para el pixel 1  de las imágenes de número 1, se tiene que realizar lo mismo para todos los los pixeles de la matriz $M$, pero terminar todos los puntos de la matriz $M$ sería el modelo sólo para la imágenes con el número 1 pero para ser un clasificador tiene que tener más que de sólo un sólo resultado, y para este proyecto tiene que clasificar entre los posibles resultados de $[0,1,2,3,4,\cdots,9]$ y por tanto tendríamos los modelos  $[M_0,M_1,M_2,M_3,M_4,\cdots,M_9]$.
 
-### Tercer paso tratar la imagen
+# Tercer paso tratar la imagen {.allowframebreaks}
 
 La entrada no es siempre la que queremos y por ello es necesario manipularla de tal manera que la entrada  coincida con una entrada  que sea posible tratarla.
 
@@ -144,7 +145,7 @@ $$
 
 Vamos desglosando cada uno  en el orden anterior
 
-#### Probabilidad a priori
+## Probabilidad a priori  {.allowframebreaks}
 
 Definamos las variables $yi \in \{0,1,2,\cdots,9\}$  ya que son las posibles categorías que hay , es decir que es la **probabilidad de que sea alguna de las categorías** y por tanto se calcula de la siguiente manera
 $$
@@ -167,7 +168,7 @@ $$
 P(Y=1)=\frac{15}{150}\%
 $$
 
-#### Probabilidad a posterior
+## Probabilidad a posterior {.allowframebreaks}
 
 Es una probabilidad condicional y por ello recordar la fórmula
 $$
@@ -185,7 +186,7 @@ $$
 
 Te dice de **cual es la probabilidad de que el pixel tenga el valor dado**, por ejemplo 
 
-### Cuarto paso  obtener la probabilidad de una imagen 
+# Cuarto paso  obtener la probabilidad de una imagen {.allowframebreaks}
 
 Para la solución requerimos saber de dos cosas:
 
@@ -201,13 +202,15 @@ Siguiendo los siguientes pasos:
 - Calcular la probabilidad  a posteriori, pixel a pixel.
 - Seleccionar la imagen con mayor coincidencia.
 
-#### Quinto paso  obtener tiempo de ejecución y precisión
+![Modos de la interpolación](img/diapositivas/image-20220516020102873.png){ width=50px }
 
-##### Tiempo de ejecución
+# Quinto paso  obtener tiempo de ejecución y precisión {.allowframebreaks}
+
+## Tiempo de ejecución {.allowframebreaks}
 
 Para lograr dicho objetivo sólo es necesario que se pueda calcular el tiempo en que  tarda desde que la imagen es leida, posteriormente tratada y obtenido su probabilidad, con ello podemos decir que se obtiene el tiempo.
 
-##### Precisión
+## Precisión {.allowframebreaks}
 
 En el caso de la precisión, tenemos que tomar 3 casos de dificultad y para lograr ello vamos a hacer algo muy simple, la regla del 80% de casos para entrenar y el 20% para probar el resultado, en este caso, el conjunto de datos de entrenamiento que tenemos es limitado y por ello tenemos que reducir la prueba a los siguientes
 
@@ -216,7 +219,7 @@ En el caso de la precisión, tenemos que tomar 3 casos de dificultad y para logr
 - Difícil: entrenar el modelo con 7 imágenes por cada modelo y comprobar el resultado con 3.
 - imposible:   entrenar el modelo con 10 imágenes por cada modelo y comprobar el resultado con 4.
 
-## Pseudocódigo
+# Pseudocódigo {.allowframebreaks}
 
 ```python
 Menu()
@@ -233,15 +236,15 @@ Menu()
     	EjecutarTestPrecision()
 ```
 
-# Experimentos 
+# Experimentos  {.allowframebreaks}
 
-## Baja dificultad  ( 3 casos )
+## Baja dificultad  ( 3 casos )  {.allowframebreaks}
 
 Son 3 imagen con resolución 32x32=1024 puntos (1x el pincel)
 
-### Problema 1
+## Problema 1
 
-![1](img/README/1-16526373701691.png){ width=70px }
+![1](img/diapositivas/1-16526373701691.png){ width=30px }
 
 ```
 Tu imagen es: ..\entrenado\1.jpg
@@ -252,9 +255,9 @@ El tiempo fue:0.171875 segundos
 
 - La predicción es correcta 
 
-### Problema 2
+## Problema 2
 
-![Imagen 2](documentacion/img/2.png){ width=70px }
+![Imagen 2](img/diapositivas/2.png){ width=30px }
 
 ```
 Tu imagen es: ..\entrenado\3.jpg
@@ -265,9 +268,9 @@ El tiempo fue:0.171875 segundos
 
 - La predicción es incorrecta. 
 
-### Problema 3
+## Problema 3
 
-![Imagen 3](documentacion/img/3.png){ width=70px }
+![Imagen 3](img/diapositivas/3.png){ width=30px }
 
 ```
 Tu imagen es: ..\entrenado\3.jpg
@@ -278,15 +281,15 @@ El tiempo fue:0.171875 segundos
 
 - La predicción es correcta 
 
-## Media dificultad  ( 3 casos )
+## Media dificultad  ( 3 casos ) {.allowframebreaks}
 
 Son 3 imagenes con resolución 144x144, es un 20x (x3 el pincel) a baja dificultad.
 
 
 
-### Problema 1
+## Problema 1
 
-![Imagen 4](documentacion/img/4.png){ width=70px }
+![Imagen 4](img/diapositivas/4.png){ width=30px }
 
 ```
 Tu imagen es: ..\entrenado\4.jpg
@@ -297,9 +300,9 @@ El tiempo fue:3.234375 segundos
 
 - La predicción es correcta.
 
-### Problema 2
+## Problema 2
 
-![Imagen 5](documentacion/img/5.png){ width=70px }
+![Imagen 5](img/diapositivas/5.png){ width=30px }
 
 ```
 Tu imagen es: ..\entrenado\5.jpg
@@ -310,9 +313,9 @@ El tiempo fue:1.671875 segundos
 
 - La predicción es correcta.
 
-### Problema 3
+## Problema 3
 
-![Imagen 6](documentacion/img/6.png){ width=70px }
+![Imagen 6](img/diapositivas/6.png){ width=30px }
 
 ```
 Tu imagen es: ..\entrenado\6.jpg
@@ -323,13 +326,13 @@ El tiempo fue:1.75 segundos
 
 
 
-## Alta dificultad  ( 3 casos )
+## Alta dificultad  ( 3 casos  ){.allowframebreaks}
 
 Son 3 imagenes con resolución de  320x320 =102,400 por tanto es un multiplicador de 100x (x10 el pincel).
 
-### Problema 1
+## Problema 1
 
-![Imagen 7](documentacion/img/7.png){ width=70px }
+![Imagen 7](img/diapositivas/7.png){ width=30px }
 
 ```
 Tu imagen es: ..\entrenado\7.jpg
@@ -340,9 +343,9 @@ El tiempo fue:7.4375 segundos
 
 - La predicción es correcta.
 
-### Problema 2
+## Problema 2
 
-![Imagen 8](documentacion/img/8.png){ width=70px }
+![Imagen 8](img/diapositivas/8.png){ width=30px }
 
 ```
 Tu imagen es: ..\entrenado\8.jpg
@@ -353,9 +356,9 @@ El tiempo fue:7.125 segundos
 
 - La predicción es correcta.
 
-### Problema 3
+## Problema 3
 
-![Imagen 9](documentacion/img/9.png){ width=70px }
+![Imagen 9](img/diapositivas/9.png){ width=30px }
 
 ```
 Tu imagen es: ..\entrenado\9.jpg
@@ -370,7 +373,7 @@ El tiempo fue:7.296875 segundos
 
 Una imagen con una resolución de 1024x1024= 1,048,576 por tanto es un multiplicador de 1024x (x32 el pincel).
 
-![Imagen 10](documentacion/img/0.png){ width=70px }
+![Imagen 10](img/diapositivas/0.png){ width=30px }
 
 ```
 Tu imagen es: ..\entrenado\5.jpg
@@ -438,11 +441,11 @@ Para las pruebas se uso el siguiente hardware:
 
 La variable en el eje X=multiplicador, en el  eje Y=tiempo
 
-![Grafica dependiente del multplicador](img/README/image-20220516004324192.png)
+![Grafica dependiente del multplicador](img/diapositivas/image-20220516004324192.png){ width=30% }
 
 Con la gráfica obtenemos que el crecimiento de tiempo es lineal.
 
-# Capítulo 3 Conclusión
+# Capítulo 3 Conclusión {.allowframebreaks}
 
 ## Barrera Peña Víctor Miguel
 
@@ -473,19 +476,19 @@ Para crear los data-set se uso el programa de Inkscape con siguientes requisitos
 
 Como seleccionar tamaño plumilla:
 
-![seleccionar tamaño plumilla](img/README/image-20220516010023659.png)
+![seleccionar tamaño plumilla](img/diapositivas/image-20220516010023659.png){ width=30% }
 
 Como seleccionar tamaño de imagen:
 
 1. Ir a propiedades de documento
 
-![image-20220516010118895](img/README/image-20220516010118895.png)
+![image-20220516010118895](img/diapositivas/image-20220516010118895.png){ width=30% }
 
 2.Cambiar dimensiones
 
-![cambiar dimensiones lienzo](img/README/image-20220516010209321.png)
+![cambiar dimensiones lienzo](img/diapositivas/image-20220516010209321.png){ width=30% }
 
-# Referencias
+# Referencias {.allowframebreaks}
 
 - *The evolution of image classification explained*. (z.d.). Image Classification. Geraadpleegd op 6 mei 2022, van https://stanford.edu/%7Eshervine/blog/evolution-image-classification-explained
 - G. (2021, 14 mei). *A brief history of Facial Recognition*. NEC. Geraadpleegd op 6 mei 2022, van https://www.nec.co.nz/market-leadership/publications-media/a-brief-history-of-facial-recognition/#:%7E:text=The%20earliest%20pioneers%20of%20facial,to%20recognise%20the%20human%20face.

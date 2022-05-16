@@ -173,7 +173,9 @@ def generarModelos()->list[str]:
         direccionModelos.append(nombreNuevo)
     return direccionModelos
 
-
+"""
+Muestra un menu para seleccionar imagenes de la carpeta input y regresa la dirección de la imagen
+"""
 def cargarImagen()->str:
     rutaInput=os.path.join("..","input")
     archivos=os.listdir(rutaInput)
@@ -203,7 +205,9 @@ def cargarImagen()->str:
                 time.sleep(1)
                 os.system("cls")
     
-
+"""
+Carga una lista de los modelos generados en la carpeta de entrenados
+"""
 def cargarModelos()->list[str]:
     rutaEntrenados=os.path.join("..","entrenado")
     archivos=os.listdir(rutaEntrenados)
@@ -234,7 +238,9 @@ def obtenerProbabilidadPosteri(modelo:list[int],imagen:list[int]):
     return probabilidad /len(modelo)
 
 
-
+"""
+Obtiene la clasificación de la imagen de acuerdo a las probabilidades obtenidas
+"""
 def clasificarImagen(direccionImagen:str,direccionesModelos:list[str])->str:
     modeloActual:list[int]
 
@@ -271,7 +277,9 @@ def clasificarImagen(direccionImagen:str,direccionesModelos:list[str])->str:
 
     return nombreResultado
         
-
+"""
+redimensiona las imagenes a la nueva dimensión pasadas por parámetro de no tener la misma resolución de la imagen
+"""
 def redimensionar(direccionImagen:str,nuevoX:int,nuevoY:int)->None:
     img=cv2.imread(direccionImagen)
     dimensionX,dimensiony,ne= img.shape
@@ -280,7 +288,9 @@ def redimensionar(direccionImagen:str,nuevoX:int,nuevoY:int)->None:
         cv2.imwrite(direccionImagen,res)
         print("cambio tamaño completado ...")
 
-
+"""
+selecciona el número de elmentos pasados como parámetro de la lista pasada como parámetro
+"""
 def sublista_Aleatoria(lista:list[str],numSeleccionados:int)->list[str]:
     num=len(lista)-1
     listaResultado=[]
@@ -294,7 +304,9 @@ def sublista_Aleatoria(lista:list[str],numSeleccionados:int)->list[str]:
     
 
 
-
+"""
+Genera el modelo matematico de una carpeta de entrenamiento y lo guarda como una imagen en la carpeta de entranado
+"""
 def crear_modeloPrecicion(rutaCarpeta:str,casosEntrenamiento:int,casosPractica:int)->list[np.ndarray,list[str]]:
     carpeta_actual=os.listdir(rutaCarpeta)
     numImagenes=len(carpeta_actual)
@@ -325,6 +337,9 @@ def crear_modeloPrecicion(rutaCarpeta:str,casosEntrenamiento:int,casosPractica:i
     histogramaPromedio=histogramaPromedio.astype(int)
     return [histogramaPromedio,imagenesPrueba_Direccion]
 
+"""
+Genera el modelo de precisión de acuerdo a número de casos de entrenamiento y los comprueba con los números de casos practicos.
+"""
 def generarModeloPrecision(casosEntrenamiento:int,casosPractica:int)->list[list[str],list[str]]:
     direccionModelos:list[str]=[]
     direccionesImagenes:list[str]=[]
@@ -357,7 +372,9 @@ def generarModeloPrecision(casosEntrenamiento:int,casosPractica:int)->list[list[
         direccionModelos.append(nombreNuevo)
     return [direccionModelos,direccionesImagenes]
 
-
+"""
+Realiza el test de precisión de los modelosentrenados
+"""
 def testPrecision(casosEntrenamiento:int,casosPractica: int)->None:
     direccionImagenes:list[str]=[]
     direccionModelos:list[str]=[]
@@ -381,7 +398,9 @@ def testPrecision(casosEntrenamiento:int,casosPractica: int)->None:
     return 100 *(numVerdadero/len(direccionImagenes))
 
         
-
+"""
+principal cuerpo programa
+"""
 def main():
     # variables globales 
     modelosCargados:list[str]=cargarModelos()
