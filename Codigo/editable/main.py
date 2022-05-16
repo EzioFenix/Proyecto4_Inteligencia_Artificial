@@ -3,6 +3,7 @@ from importlib.util import module_from_spec
 from operator import le, mod
 import os
 from pyexpat import model
+import random
 from cv2 import line
 import numpy as np # numpy
 import cv2  # biblioteca de open cv
@@ -234,7 +235,7 @@ def obtenerProbabilidadPosteri(modelo:list[int],imagen:list[int]):
 
 
 
-def clasificarImagen(direccionImagen:str,direccionesModelos:list[str])->None:
+def clasificarImagen(direccionImagen:str,direccionesModelos:list[str])->str:
     modeloActual:list[int]
 
     redimensionar(direccionImagen)
@@ -260,6 +261,8 @@ def clasificarImagen(direccionImagen:str,direccionesModelos:list[str])->None:
     print(f"Tu imagen es: {nombreResultado}")
     print(f"La probabilidad es: {probabilidadMayor *probabilidadApriori}")
     print(f"La probabilidad de coincidencia es :{probabilidadMayor}")
+
+    return nombreResultado
         
 
 def redimensionar(direccionImagen:str)->None:
@@ -271,9 +274,106 @@ def redimensionar(direccionImagen:str)->None:
         print("cambio tamaño completado ...")
 
 
+def sublista_Aleatoria(lista:list[str],numSeleccionados:int)->list[str]:
+    num=len(lista)-1
+    listaResultado=[]
+    
+    while len(listaResultado) <numSeleccionados:
+        numAleatorio=random.randint(0,num)
+        listaResultado.append(lista.pop(numAleatorio))
+        num-=1
 
-def testPrecision(direccionImagen:str)->None:
-    pass
+    return listaResultado  
+    
+
+
+
+def crear_modeloPrecicion(rutaCarpeta:str,casosEntrenamiento:int,casosPractica:int)->list[np.ndarray,list[str]]:
+    carpeta_actual=os.listdir(rutaCarpeta)
+    numImagenes=len(carpeta_actual)
+    histogramaPromedio=np.zeros(1024,dtype=np.int8)
+    
+    imagenesPrueba=sublista_Aleatoria(carpeta_actual,casosPractica)
+    aux=sublista_Aleatoria(carpeta_actual,casosEntrenamiento)
+    carpeta_actual=aux.copy()
+    imagenesPrueba_Direccion:list[str]=[]
+
+    # Convertir el nombre de las imagenes en una dirección absoluta
+    for imagen in imagenesPrueba:
+        imagenesPrueba_Direccion.append(os.path.join(rutaCarpeta,imagen))
+
+    for imagen in carpeta_actual:
+        rutaImagen=os.path.join(rutaCarpeta,imagen)
+        lecturaImagen=leer_imagen(rutaImagen)
+
+        # Convertimos el arreglo a un np.array
+        histogramaActual=np.asanyarray(lecturaImagen)
+
+        histogramaPromedio=histogramaPromedio+histogramaActual
+
+    # Para ser pormedio tenemos que dividirlo entre el número de imagenes
+    histogramaPromedio= histogramaPromedio/numImagenes 
+
+    #El arreglo ahora es flotante, por tanto vamos a convertirlo a int
+    histogramaPromedio=histogramaPromedio.astype(int)
+    return [histogramaPromedio,imagenesPrueba_Direccion]
+
+def generarModeloPrecision(casosEntrenamiento:int,casosPractica:int)->list[list[str],list[str]]:
+    direccionModelos:list[str]=[]
+    direccionesImagenes:list[str]=[]
+
+    entrenamientoPath=os.path.join("..","entrenamiento")
+    # Leemos los archivos de entrenamiento
+    carpetas=os.listdir(entrenamientoPath)
+    # Leemos cada uno de los modelos de entrenamiento
+    for subcarpeta in carpetas:
+        ruta=os.path.join(entrenamientoPath,subcarpeta)
+
+        modelo,direcciones=crear_modeloPrecicion(ruta,casosEntrenamiento,casosPractica)
+
+        # Direcciones de imagenes por cada carpeta
+        direccionesImagenes.extend(direcciones)
+        
+        # crear imagen
+        # dimensiones y,x
+        imagen=np.zeros((32,32),dtype=np.intc)
+        modelo=list(modelo)
+        for j in range (32):
+            for i in range(32):
+                imagen[j,i]=modelo.pop(0)
+        
+        # Creamos imagen
+        nombreNuevo=os.path.join("..","entrenado",subcarpeta+".jpg")
+        cv2.imwrite(nombreNuevo,imagen)
+
+        #agregamos a la lista de archivos
+        direccionModelos.append(nombreNuevo)
+    return [direccionModelos,direccionesImagenes]
+
+
+def testPrecision(casosEntrenamiento:int,casosPractica: int)->None:
+    direccionImagenes:list[str]=[]
+    direccionModelos:list[str]=[]
+    numVerdadero=0
+
+    direccionModelos,direccionImagenes=generarModeloPrecision(casosEntrenamiento,casosPractica)
+
+    print(f"Num: {len(direccionImagenes)}")
+
+    for imagen in direccionImagenes:
+        n2=clasificarImagen(imagen,direccionModelos)
+        n2=n2.split("\\")[-1]
+        n2=n2.split(".")[-2]
+
+        n1=imagen.split("\\")[-2]
+        print(f"realidad: {n1} -- prediccion :{n2} resultado {n2==n1}")
+        if n2==n1:
+            numVerdadero+=1
+        
+    print(f"La precisión es de : {100 *(numVerdadero/len(direccionImagenes))}%")
+    return 100 *(numVerdadero/len(direccionImagenes))
+
+        
 
 def main():
     # variables globales 
@@ -334,10 +434,12 @@ def main():
                     clasificarImagen(direccionImagenCargada,modelosCargados)
         elif opcion==4:
             print("Realizar test precisión")
-            if isImagenCargada:
-                testPrecision(direccionImagenCargada)
-            else:
-                print("primero necesitas clasificar la imagen para poder hacer test de precesión")
+            test=[]
+            test.append(testPrecision(4,1))
+            test.append(testPrecision(5,2))
+            test.append(testPrecision(7,3))
+            test.append(testPrecision(10,4))
+            print(test)
 
 if __name__ == "__main__":
     #leer_directorio(True)
