@@ -4,6 +4,7 @@ from operator import le, mod
 import os
 from pyexpat import model
 import random
+import sys
 from cv2 import line
 import numpy as np # numpy
 import cv2  # biblioteca de open cv
@@ -84,7 +85,8 @@ def menu()->int:
 
         print("Introduce el número de la opción que deseas ejecutar")
         # introducir opcion
-        opcion=input("")
+        opcion=sys.stdin.readline()
+        opcion=opcion.strip()
 
         if not opcion.isdigit():
             print("Tienes que introducir un número, intenta de nuevo")
@@ -189,7 +191,8 @@ def cargarImagen()->str:
 
         print("Introduce el número de la imagen")
         # introducir opcion
-        opcion=input("")
+        opcion=sys.stdin.readline()
+        opcion=opcion.strip()
 
         if not opcion.isdigit():
             print("Tienes que introducir un número, intenta de nuevo")
@@ -418,8 +421,8 @@ def main():
         elif opcion==1:
             print("Entrenanando modelos...")
             if isModelosCargados:
-                print("Deseas volver a generar los modelos")
-                respuesta=input("s=si,n=no   ")
+                print("Deseas volver a generar los modelos s=si,n=no   ")
+                respuesta=sys.stdin.readline()
                 respuesta=respuesta.strip()
                 if respuesta=="s":
                     modelosCargados=generarModelos()
@@ -447,7 +450,8 @@ def main():
             print("Clasificar una imagen")
             if isModelosCargados:
                 if isImagenCargada:
-                    respuesta=input("Desea cargar otra imagen s=si,n=no ")
+                    print("Desea cargar otra imagen s=si,n=no ")
+                    respuesta=sys.stdin.readline()
                     respuesta=respuesta.strip()
                     if respuesta=="s":
                         isImagenCargada=False
